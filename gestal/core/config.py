@@ -19,3 +19,6 @@ TASK_BOX_MIN_HEIGHT = WINDOW_HEIGHT - TASK_BOX_SEARCH_BAR_MIN_HEIGHT
 
 DETAIL_BOX_MIN_WIDTH = 192
 DETAIL_BOX_MIN_HEIGHT = WINDOW_HEIGHT
+
+# Config directory / DB directory TODO: determine where is the best place to save the data
+DB_PATH = ''
