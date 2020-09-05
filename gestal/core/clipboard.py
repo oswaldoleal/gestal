@@ -1,0 +1,1 @@
+# all the clipboard logic should be placed here TODO
