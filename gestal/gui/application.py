@@ -1,11 +1,14 @@
 from gi.repository import Gtk
 from .window import MainWindow
+from backend.backend import Backend
 
 class Application(Gtk.Application):
     main_window = None
+    backend = None
 
     def __init__(self, app_id):
         super(Application, self).__init__(application_id = app_id)
+        backend = Backend()
 
     def do_activate(self):
         if (not self.main_window):
