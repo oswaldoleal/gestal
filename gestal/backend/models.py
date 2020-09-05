@@ -1,5 +1,5 @@
 from datetime import datetime
-from persistence import Persistence
+from .persistence import Persistence
 
 class Base:
     id = None
@@ -10,9 +10,6 @@ class Base:
         self.creation_date = datetime.now().isoformat()
         if (persistence):
             self.__persistence = persistence
-
-    def pp(self):
-        print(id(self.__persistence))
 
     def save(self):
         if (self.id):
