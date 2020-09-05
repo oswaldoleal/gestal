@@ -1,4 +1,7 @@
 from uuid import uuid4
+from core import info, config as cfg
+from os import path
+import sqlite3
 
 class Persistence():
     storage_methods = []
@@ -57,11 +60,19 @@ class BaseStorage():
         return data
 
 class DefaultStorage(BaseStorage):
-    name = 'Default Storage'
+    name = 'default_storage'
 
     def __init__(self):
-        # Initialize the SQLite database TODO
-        pass
+        DB_NAME = f'{info.NAME}_{self.name}.db'
+        
+        if (path.isfile(f'{cfg.DB_PATH}{DB_NAME}')):
+            return
+        
+        con = sqlite3.connect(DB_NAME)
+
+        # TODO: register the models databases
+
+        con.close()
 
     def insert(self, obj):
         id = self.get_new_id(type(obj))
