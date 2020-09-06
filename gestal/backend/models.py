@@ -37,12 +37,13 @@ class Base:
 class Task(Base):
     project_id = None
     owner_id = None
+    parent_id = None
     status = None
     name = None
     description = None
     due_date = None
 
-    def __init__(self, name = None, owner_id = None, description = None, project_id = None, status = None, due_date = None, data = None, persistence = None):
+    def __init__(self, name = None, owner_id = None, parent_id = None, description = None, project_id = None, status = None, due_date = None, data = None, persistence = None):
         super(Task, self).__init__(persistence = persistence)
         if (data):
             for key in data.keys():
@@ -58,6 +59,8 @@ class Task(Base):
             self.owner_id = owner_id
         if (project_id):
             self.project_id = project_id
+        if (parent_id):
+            self.parent_id = parent_id
         if (status):
             self.status = status
         if (due_date):
