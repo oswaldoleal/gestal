@@ -1,12 +1,16 @@
 from gi.repository import Gtk
 from core import config as cfg
+from .strings import get_string
 
 # Change this for a scrollable one TODO
 class OrganizerBox(Gtk.ScrolledWindow):
     main_box = None
+    backend = None
 
-    def __init__(self):
+    def __init__(self, backend):
         super(OrganizerBox, self).__init__(hexpand = True, vexpand = True)
+        self.backend = backend
+
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_size_request(cfg.ORGANIZER_BOX_MIN_WIDTH, cfg.ORGANIZER_BOX_MIN_HEIGHT)
 
@@ -19,26 +23,94 @@ class OrganizerBox(Gtk.ScrolledWindow):
 
         # The TreeView section holds the projects as a top level (default project has no label (?))
 
+class SettingsBox(Gtk.Box):
+    backend = None
+
+    def __init__(self, backend):
+        super(SettingsBox, self).__init__(spacing = 5, orientation = Gtk.Orientation.HORIZONTAL)
+        self.backend = backend
+
+        self.set_size_request(cfg.SETTINGS_BOX_MIN_WIDTH, cfg.SETTINGS_BOX_MIN_HEIGHT)
+
+        for _ in range(5):
+            b = Gtk.Button(label="SettingsBox")
+            self.pack_end(b, True, True, 0)
+
+        # The TreeView section holds the projects as a top level (default project has no label (?))
+
 class DetailBox(Gtk.ScrolledWindow):
     main_box = None
+    backend = None
 
-    def __init__(self):
+    def __init__(self, backend):
         super(DetailBox, self).__init__(hexpand = True, vexpand = True)
+        self.backend = backend
+
+        # Basic setup (size and orientation)
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_size_request(cfg.DETAIL_BOX_MIN_WIDTH, cfg.DETAIL_BOX_MIN_HEIGHT)
-
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
 
-        for _ in range(30):
-            b = Gtk.Button(label="DetailBox")
-            self.main_box.pack_end(b, True, True, 0)
+        # Task Name section
+        self.task_name_label = Gtk.Label(get_string('task_name_label'))
+        self.main_box.pack_start(self.task_name_label, False, False, 0)
+
+        self.task_name_entry = Gtk.Entry()
+        self.task_name_entry.set_placeholder_text(get_string('task_name_label'))
+        self.main_box.pack_start(self.task_name_entry, False, False, 0)
+
+        # Task Description section
+        self.task_description_label = Gtk.Label(get_string('task_description_label'))
+        self.main_box.pack_start(self.task_description_label, False, False, 0)
+
+        self.task_description_entry = Gtk.Entry()
+        self.task_description_entry.set_placeholder_text(get_string('task_description_label'))
+        self.main_box.pack_start(self.task_description_entry, False, False, 0)
+
+        # Task Project section
+        self.task_project_label = Gtk.Label(get_string('task_project_label'))
+        self.main_box.pack_start(self.task_project_label, False, False, 0)
+
+        self.task_project_combobox = Gtk.ComboBox()
+        renderer_text = Gtk.CellRendererText()
+        self.task_project_combobox.pack_start(renderer_text, True)
+        self.task_project_combobox.add_attribute(renderer_text, "text", 0)
+        self.task_project_combobox.set_model(self.get_projects())
+        self.main_box.pack_start(self.task_project_combobox, False, False, 0)
+
+        # Task Due Date section
+        self.task_due_date_label = Gtk.Label(get_string('task_due_date_label'))
+        self.main_box.pack_start(self.task_due_date_label, False, False, 0)
+
+        self.task_due_date_calendar = Gtk.Calendar()
+        self.main_box.pack_start(self.task_due_date_calendar, False, False, 0)
+
+        # Task Tag section TODO
+        # Task Color section TODO
+        
+
+    def get_projects(self):
+        # TODO: get the projects from the backend
+        project_store = Gtk.ListStore(str)
+        projects = [
+            "None",
+            "UCAB",
+            "Gestal",
+        ]
+        for project in projects:
+            project_store.append([project])
+
+        return project_store
 
 class TaskBox(Gtk.ScrolledWindow):
     main_box = None
+    backend = None
 
-    def __init__(self):
+    def __init__(self, backend):
         super(TaskBox, self).__init__(hexpand = True, vexpand = True)
+        self.backend = backend
+
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_size_request(cfg.TASK_BOX_MIN_WIDTH, cfg.TASK_BOX_MIN_HEIGHT)
 
@@ -51,8 +123,12 @@ class TaskBox(Gtk.ScrolledWindow):
 
 class TaskBoxSearchBar(Gtk.Box):
     search_entry = None
-    def __init__(self):
+    backend = None
+
+    def __init__(self, backend):
         super(TaskBoxSearchBar, self).__init__()
+        self.backend = backend
+
         self.set_size_request(cfg.TASK_BOX_SEARCH_BAR_MIN_WIDTH, cfg.TASK_BOX_SEARCH_BAR_MIN_HEIGHT)
 
         self.search_entry = Gtk.SearchEntry()

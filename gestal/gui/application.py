@@ -12,7 +12,7 @@ class Application(Gtk.Application):
 
     def do_activate(self):
         if (not self.main_window):
-            self.main_window = MainWindow(self)
+            self.main_window = MainWindow(self, self.backend)
         
         self.main_window.show_all()
 
