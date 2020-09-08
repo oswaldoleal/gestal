@@ -8,7 +8,9 @@ class Application(Gtk.Application):
 
     def __init__(self, app_id):
         super(Application, self).__init__(application_id = app_id)
-        backend = Backend()
+        self.backend = Backend()
+
+        # TODO: check if there is an existing user, if not create one
 
     def do_activate(self):
         if (not self.main_window):

@@ -2,6 +2,7 @@ from uuid import uuid4
 from core import info, config as cfg
 from .models import Task, Team, TeamPermission, Project, User
 from os import path
+from datetime import datetime
 import sqlite3
 
 class Persistence():
@@ -75,7 +76,9 @@ class DefaultStorage(BaseStorage):
         for query in self.get_table_queries():
             cur.execute(query)
 
-        # TODO: register the default project
+        query = f'INSERT INTO {Project.__name__} VALUES (?, ?, ?, ?)'
+        # TODO: set the proper user id to handle the correct username avoiding clashes with the cloud
+        cur.execute(query, (datetime.now().isoformat(), 'Ungrouped tasks', 1, 1))
 
         con.commit()
 

@@ -1,5 +1,7 @@
 from datetime import datetime
 
+# TODO: Models IDs should be UUID istead of integers
+
 class Base:
     id = 0
     creation_date = ''

@@ -134,3 +134,5 @@ class TaskBoxSearchBar(Gtk.Box):
         self.search_entry = Gtk.SearchEntry()
         self.search_entry.set_size_request(int(float(cfg.WINDOW_WIDTH) * 0.5), 1)
         self.pack_start(self.search_entry, True, False, 0)
+
+# TODO: create the LoginWindow widgets

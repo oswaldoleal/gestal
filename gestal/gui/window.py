@@ -54,3 +54,5 @@ class MainWindow(Gtk.ApplicationWindow):
         self.view.attach_next_to(self.detail_box,self.task_box_search_bar, Gtk.PositionType.RIGHT, 40, 130)
 
         # self.connect("destroy", Gtk.main_quit)
+
+# TODO: create the LoginWindow class
