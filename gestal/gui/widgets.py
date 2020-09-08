@@ -1,5 +1,5 @@
-from gi.repository import Gtk
 from core import config as cfg
+from gi.repository import Gtk
 from .strings import get_string
 
 # Change this for a scrollable one TODO
@@ -88,7 +88,6 @@ class DetailBox(Gtk.ScrolledWindow):
 
         # Task Tag section TODO
         # Task Color section TODO
-        
 
     def get_projects(self):
         # TODO: get the projects from the backend
@@ -135,4 +134,4 @@ class TaskBoxSearchBar(Gtk.Box):
         self.search_entry.set_size_request(int(float(cfg.WINDOW_WIDTH) * 0.5), 1)
         self.pack_start(self.search_entry, True, False, 0)
 
-# TODO: create the LoginWindow widgets
+    # TODO: create the LoginWindow widgets

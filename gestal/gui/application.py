@@ -1,6 +1,7 @@
-from gi.repository import Gtk
-from .window import MainWindow
 from backend.backend import Backend
+from gi.repository import Gtk
+from os.path import abspath, dirname, join
+from .window import MainWindow
 
 class Application(Gtk.Application):
     main_window = None

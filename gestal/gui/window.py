@@ -1,7 +1,8 @@
-from gi.repository import Gtk
-import core.config as cfg
+from core import config as cfg
+from gi.repository import Gdk, Gtk
+from os.path import abspath, dirname, join
 from .strings import get_string
-from .widgets import OrganizerBox, SettingsBox, TaskBox, TaskBoxSearchBar, DetailBox
+from .widgets import DetailBox, OrganizerBox, SettingsBox, TaskBox, TaskBoxSearchBar
 
 class MainWindow(Gtk.ApplicationWindow):
     # Left container that holds the project trees
@@ -54,5 +55,19 @@ class MainWindow(Gtk.ApplicationWindow):
         self.view.attach_next_to(self.detail_box,self.task_box_search_bar, Gtk.PositionType.RIGHT, 40, 130)
 
         # self.connect("destroy", Gtk.main_quit)
+        self.set_style()
 
-# TODO: create the LoginWindow class
+    # TODO: create the LoginWindow class
+
+    def set_style(self):
+        css_path = abspath(dirname(__file__))
+
+        provider = Gtk.CssProvider()
+        provider.load_from_path(join(css_path, "css/style.css"))
+        screen = Gdk.Display.get_default_screen(Gdk.Display.get_default())
+        # I was unable to found instrospected version of this
+        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION = 600
+        Gtk.StyleContext.add_provider_for_screen(
+            screen, provider,
+            GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
+        )

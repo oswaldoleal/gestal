@@ -1,0 +1,11 @@
+/* LIGHT COLOR SCHEME */
+
+@define-color bg_color #ffffff;
+@define-color fg_color #000000;
+
+/* DARK COLOR SCHEME */
+
+@define-color dark_bg_color #000000;
+@define-color dark_fg_color #ffffff;
+
+/* COMMON COLOR SCHEME */

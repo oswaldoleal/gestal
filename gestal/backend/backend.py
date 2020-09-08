@@ -1,5 +1,5 @@
 from .models import Task
-from .persistence import Persistence, DefaultStorage
+from .persistence import DefaultStorage, Persistence
 
 class Backend:
     # this persistence object should be handled as a singleton TODO

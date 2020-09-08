@@ -1,0 +1,8 @@
+@import url("colors.css");
+
+/* BASIC */
+
+.background {
+    background-color: @bg_color;
+    color: @fg_color;
+}
