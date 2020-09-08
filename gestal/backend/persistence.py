@@ -71,10 +71,12 @@ class DefaultStorage(BaseStorage):
         
         con = sqlite3.connect(DB_NAME)
 
-        # TODO: register the models databases
         cur = con.cursor()
         for query in self.get_table_queries():
             cur.execute(query)
+
+        # TODO: register the default project
+
         con.commit()
 
         con.close()
