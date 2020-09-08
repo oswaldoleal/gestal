@@ -1,9 +1,8 @@
 from datetime import datetime
-from .persistence import Persistence
 
 class Base:
-    id = None
-    creation_date = None
+    id = 0
+    creation_date = ''
     __persistence = None
 
     def __init__(self, persistence = None):
@@ -35,13 +34,13 @@ class Base:
         return persistence.get_all(type)
 
 class Task(Base):
-    project_id = None
-    owner_id = None
-    parent_id = None
-    status = None
-    name = None
-    description = None
-    due_date = None
+    project_id = 0
+    owner_id = 0
+    parent_id = 0
+    status = ''
+    name = ''
+    description = ''
+    due_date = ''
 
     def __init__(self, name = None, owner_id = None, parent_id = None, description = None, project_id = None, status = None, due_date = None, data = None, persistence = None):
         super(Task, self).__init__(persistence = persistence)
@@ -67,8 +66,8 @@ class Task(Base):
             self.due_date = due_date
 
 class Project(Base):
-    owner_id = None
-    description = None
+    owner_id = 0
+    description = ''
 
     def __init__(self, owner_id = None, description = None, data = None, persistence = None):
         super(Project, self).__init__(persistence = persistence)
@@ -84,9 +83,9 @@ class Project(Base):
             self.owner_id = owner_id
 
 class Team(Base):
-    owner_id = None
-    name = None
-    description = None
+    owner_id = 0
+    name = ''
+    description = ''
 
     def __init__(self, name = None, owner_id = None, description = None, data = None, persistence = None):
         super(Team, self).__init__(persistence = persistence)
@@ -104,9 +103,9 @@ class Team(Base):
             self.owner_id = owner_id
 
 class TeamPermission(Base):
-    team_id = None
-    user_id = None
-    permissions = None # 0 (view), 1 (edit), 2 (owner)
+    team_id = 0
+    user_id = 0
+    permissions = 0 # 0 (view), 1 (edit), 2 (owner)
 
     def __init__(self, team_id = None, user_id = None, permissions = None, data = None, persistence = None):
         super(TeamPermission, self).__init__(persistence = persistence)
@@ -124,11 +123,11 @@ class TeamPermission(Base):
             self.permissions = permissions
 
 class User(Base):
-    username = None
-    password = None
-    email = None
-    first_name = None
-    last_name = None
+    username = ''
+    password = ''
+    email = ''
+    first_name = ''
+    last_name = ''
 
     def __init__(self, username = None, password = None, email = None, first_name = None, last_name = None, data = None, persistence = None):
         super(User, self).__init__(persistence = persistence)

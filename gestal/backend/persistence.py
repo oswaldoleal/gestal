@@ -1,5 +1,6 @@
 from uuid import uuid4
 from core import info, config as cfg
+from .models import Task, Team, TeamPermission, Project, User
 from os import path
 import sqlite3
 
@@ -44,7 +45,7 @@ class BaseStorage():
         pass # To be implemented in the other classes
 
     def get_attribute_names(self, type):
-        return [a for a in dir(type) if (not a.startswith('__')) and ('function' not in str(getattr(type, a)))]
+        return [a for a in dir(type) if ('__' not in a) and ('function' not in str(getattr(type, a)))]
 
     def get_data(self, obj):
         # the id always goes first
@@ -71,8 +72,26 @@ class DefaultStorage(BaseStorage):
         con = sqlite3.connect(DB_NAME)
 
         # TODO: register the models databases
+        cur = con.cursor()
+        for query in self.get_table_queries():
+            cur.execute(query)
+        con.commit()
 
         con.close()
+
+    def get_table_queries(self):
+        queries = []
+
+        for type in [Task, Project, Team, TeamPermission, User]:
+            attributes = self.get_attribute_names(type)
+            attributes_type = [a + ' ' + ('INTEGER' if isinstance(getattr(type, a), int) else 'TEXT' if isinstance(getattr(type, a), str) else 'REAL' if isinstance(getattr(type, a), float) else 'NULL') for a in attributes]
+            table_name = type.__name__
+
+            attributes = ', '.join(attributes_type)
+            query = f'CREATE TABLE {table_name} ({attributes})'
+            queries.append(query)
+
+        return queries
 
     def insert(self, obj):
         id = self.get_new_id(type(obj))
