@@ -1,9 +1,9 @@
 from core import config as cfg, info
 from datetime import datetime
 from os import path
-import sqlite3
 from uuid import uuid4
 from .models import Project, Task, Team, TeamPermission, User
+import sqlite3
 
 class Persistence():
     storage_methods = []
