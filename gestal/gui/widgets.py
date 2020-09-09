@@ -17,11 +17,32 @@ class OrganizerBox(Gtk.ScrolledWindow):
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
 
-        for _ in range(5):
-            b = Gtk.Button(label="OrganizerBox")
-            self.main_box.pack_end(b, True, True, 0)
+        # TODO: add new project button
+        self.add_project_button = Gtk.Button(label="+")
+        self.main_box.pack_start(self.add_project_button, False, False, 0)
+        
+        self.project_view = Gtk.TreeView()
+        cell_renderer = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(None, cell_renderer, text=0)
+        self.project_view.append_column(col)
+        self.set_projects()
+        self.main_box.pack_start(self.project_view, True, True, 0)
 
-        # The TreeView section holds the projects as a top level (default project has no label (?))
+    def set_projects(self):
+        projects = self.backend.get_projects()
+
+        model = Gtk.TreeStore(str)
+        for project in projects:
+            piter = model.append(None, (project.name,))
+
+            # TODO: turn this into a recursive function
+            for task in self.backend.get_tasks(filter = {'project_id': project.id}):
+                titer = model.append(piter, (task.name,))
+
+                for child_task in self.backend.get_tasks(filter = {'parent_id': task.id}):
+                    model.append(titer, (child_task.name,))
+        
+        self.project_view.set_model(model)
 
 class SettingsBox(Gtk.Box):
     backend = None
