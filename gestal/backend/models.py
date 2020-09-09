@@ -29,13 +29,16 @@ class Base:
 
     @staticmethod
     def get(type, id, persistence):
+        # TODO: infer type from self
         return persistence.get(type, id)
 
     @staticmethod
-    def get_all(type, persistence):
-        return persistence.get_all(type)
+    def get_all(type, persistence, filter = None):
+        # TODO: infer type from self
+        return persistence.get_all(type, filter = filter)
 
 class Task(Base):
+    # TODO: there should be only one foreign key, the parent id (project / task) with a flag to check the parent type
     project_id = 0
     owner_id = 0
     parent_id = 0
@@ -48,7 +51,7 @@ class Task(Base):
         super(Task, self).__init__(persistence = persistence)
         if (data):
             for key in data.keys():
-                setattr(self, key, data['key'])
+                setattr(self, key, data[key])
 
             return
 
@@ -69,18 +72,21 @@ class Task(Base):
 
 class Project(Base):
     owner_id = 0
+    name = ''
     description = ''
 
-    def __init__(self, owner_id = None, description = None, data = None, persistence = None):
+    def __init__(self, owner_id = None, name = None, description = None, data = None, persistence = None):
         super(Project, self).__init__(persistence = persistence)
         if (data):
             for key in data.keys():
-                setattr(self, key, data['key'])
+                setattr(self, key, data[key])
 
             return
             
         if (description):
             self.description = description
+        if (name):
+            self.name = name
         if (owner_id):
             self.owner_id = owner_id
 
@@ -93,7 +99,7 @@ class Team(Base):
         super(Team, self).__init__(persistence = persistence)
         if (data):
             for key in data.keys():
-                setattr(self, key, data['key'])
+                setattr(self, key, data[key])
 
             return
             
@@ -113,7 +119,7 @@ class TeamPermission(Base):
         super(TeamPermission, self).__init__(persistence = persistence)
         if (data):
             for key in data.keys():
-                setattr(self, key, data['key'])
+                setattr(self, key, data[key])
 
             return
             
@@ -135,7 +141,7 @@ class User(Base):
         super(User, self).__init__(persistence = persistence)
         if (data):
             for key in data.keys():
-                setattr(self, key, data['key'])
+                setattr(self, key, data[key])
 
             return
             
@@ -149,3 +155,5 @@ class User(Base):
             self.first_name = first_name
         if (last_name):
             self.last_name = last_name
+
+# TODO: create tags model

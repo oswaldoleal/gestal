@@ -30,8 +30,8 @@ class Persistence():
     def get(self, type, id):
         pass # TODO
 
-    def get_all(self, type):
-        pass # TODO
+    def get_all(self, type, filter = None):
+        return self.storage_methods[0].get_all(type, filter = filter)
 
 class BaseStorage():
     name = None
@@ -63,22 +63,24 @@ class BaseStorage():
 
 class DefaultStorage(BaseStorage):
     name = 'default_storage'
+    DB_NAME = ''
 
     def __init__(self):
-        DB_NAME = f'{info.NAME}_{self.name}.db'
+        self.DB_NAME = f'{info.NAME}_{self.name}.db'
         
-        if (path.isfile(f'{cfg.DB_PATH}{DB_NAME}')):
+        if (path.isfile(f'{cfg.DB_PATH}{self.DB_NAME}')):
             return
         
-        con = sqlite3.connect(DB_NAME)
+        # TODO: move the relevant code to the 'execute' function
+        con = sqlite3.connect(self.DB_NAME)
 
         cur = con.cursor()
         for query in self.get_table_queries():
             cur.execute(query)
 
-        query = f'INSERT INTO {Project.__name__} VALUES (?, ?, ?, ?)'
+        query = f'INSERT INTO {Project.__name__} VALUES (?, ?, ?, ?, ?)'
         # TODO: set the proper user id to handle the correct username avoiding clashes with the cloud
-        cur.execute(query, (datetime.now().isoformat(), 'Ungrouped tasks', 1, 1))
+        cur.execute(query, (datetime.now().isoformat(), 'Ungrouped tasks', 1, 'Ungrouped', 1))
 
         con.commit()
 
@@ -129,6 +131,38 @@ class DefaultStorage(BaseStorage):
             else:
                 id = str(uuid4())
 
-    def execute(self, query, data):
+    def get_all(self, type, filter = None):
+        query = f'select * from {type.__name__}'
+        if (filter):
+            query += ' where'
+            for key in filter.keys():
+                query += f' {key} = {filter[key]}'
+        
+        rows = self.execute(query)
+
+        attribute_names = self.get_attribute_names(type)
+        objects = []
+        for row in rows:
+            data = {}
+            for i in range(len(attribute_names)):
+                data[attribute_names[i]] = row[i]
+            obj = type(data = data)
+            objects.append(obj)
+
+        return objects
+
+    def execute(self, query, data = ()):
         # TODO
-        return True
+
+        con = sqlite3.connect(self.DB_NAME)
+        cur = con.cursor()
+
+        ret_data = True
+        cur.execute(query, data)
+
+        if (query.startswith('select')):
+            ret_data = cur.fetchall()
+    
+        con.commit()
+        con.close()
+        return ret_data
