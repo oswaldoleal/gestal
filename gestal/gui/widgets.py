@@ -2,6 +2,20 @@ from core import config as cfg
 from gi.repository import Gtk
 from .strings import get_string
 
+def replace_widget(current, new):
+    container = current.get_parent()
+    assert container
+
+    props = {}
+    for pspec in container.list_child_properties():
+        props[pspec.name] = container.child_get_property(current, pspec.name)
+
+    container.remove(current)
+    container.add(new)
+
+    for name, value in props.items():
+        container.child_set_property(new, name, value)
+
 # Change this for a scrollable one TODO
 class OrganizerBox(Gtk.ScrolledWindow):
     main_box = None
@@ -19,6 +33,7 @@ class OrganizerBox(Gtk.ScrolledWindow):
 
         # TODO: add new project button
         self.add_project_button = Gtk.Button(label="+")
+        self.add_project_button.connect('clicked', self.add_project_form)
         self.main_box.pack_start(self.add_project_button, False, False, 0)
         
         self.project_view = Gtk.TreeView()
@@ -27,6 +42,28 @@ class OrganizerBox(Gtk.ScrolledWindow):
         self.project_view.append_column(col)
         self.set_projects()
         self.main_box.pack_start(self.project_view, True, True, 0)
+
+    def add_project_form(self, button):
+        # TODO: turn this into its own widget
+        self.add_project_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
+        name_label = Gtk.Label()
+        name_label = Gtk.Label('Project Name')
+        self.add_project_box.pack_start(name_label, False, False, 0)
+
+        name_entry = Gtk.Entry()
+        name_entry.set_placeholder_text('Project Name')
+        self.add_project_box.pack_start(name_entry, False, False, 0)
+
+        description_label = Gtk.Label()
+        description_label = Gtk.Label('Project Description')
+        self.add_project_box.pack_start(description_label, False, False, 0)
+
+        description_entry = Gtk.Entry()
+        description_entry.set_placeholder_text('Project Description')
+        self.add_project_box.pack_start(description_entry, False, False, 0)
+
+        self.add_project_box.show_all()
+        replace_widget(self.add_project_button, self.add_project_box)
 
     def set_projects(self):
         projects = self.backend.get_projects()
