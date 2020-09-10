@@ -23,11 +23,11 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app, backend):
         super(MainWindow, self).__init__(application = app)
 
-        # TODO: add the app icon to the window
-        # self.set_icon_from_file("icon.png")
-
         self.backend = backend
 
+        # TODO: add the app icon to the window
+        gestal_path = abspath(dirname(__file__)).split('gui')[0]
+        self.set_icon_from_file(join(gestal_path, "data/icon.png"))
         self.set_title(get_string("window_title"))
         self.set_default_size(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
         self.set_size_request(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
@@ -60,10 +60,10 @@ class MainWindow(Gtk.ApplicationWindow):
     # TODO: create the LoginWindow class
 
     def set_style(self):
-        css_path = abspath(dirname(__file__))
+        gui_path = abspath(dirname(__file__))
 
         provider = Gtk.CssProvider()
-        provider.load_from_path(join(css_path, "css/style.css"))
+        provider.load_from_path(join(gui_path, "css/style.css"))
         screen = Gdk.Display.get_default_screen(Gdk.Display.get_default())
         # I was unable to found instrospected version of this
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION = 600

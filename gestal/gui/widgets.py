@@ -89,6 +89,7 @@ class DetailBox(Gtk.ScrolledWindow):
         self.task_description_entry.set_placeholder_text(get_string('task_description_label'))
         self.main_box.pack_start(self.task_description_entry, False, False, 0)
 
+        # TODO: this should be inferred from the current project selection (?) 
         # Task Project section
         self.task_project_label = Gtk.Label(get_string('task_project_label'))
         self.main_box.pack_start(self.task_project_label, False, False, 0)
@@ -100,6 +101,7 @@ class DetailBox(Gtk.ScrolledWindow):
         self.task_project_combobox.set_model(self.get_projects())
         self.main_box.pack_start(self.task_project_combobox, False, False, 0)
 
+        # TODO: turn this calendar widget into a popover for a label
         # Task Due Date section
         self.task_due_date_label = Gtk.Label(get_string('task_due_date_label'))
         self.main_box.pack_start(self.task_due_date_label, False, False, 0)
@@ -108,7 +110,18 @@ class DetailBox(Gtk.ScrolledWindow):
         self.main_box.pack_start(self.task_due_date_calendar, False, False, 0)
 
         # Task Tag section TODO
-        # Task Color section TODO
+        self.task_tags_label = Gtk.Label(get_string('task_tags_label'))
+        self.main_box.pack_start(self.task_tags_label, False, False, 0)
+
+        self.task_tags_entry = Gtk.Entry()
+        self.task_tags_entry.set_placeholder_text(get_string('task_tags_ph'))
+        self.main_box.pack_start(self.task_tags_entry, False, False, 0)
+
+        # Task Color section TODO: this should be an entry widget with a popover color selector (hex? or premade)
+
+        # Save task section
+        self.task_save_button = Gtk.Button(label = get_string('task_save'))
+        self.main_box.pack_start(self.task_save_button, False, False, 0)
 
     def get_projects(self):
         # TODO: get the projects from the backend

@@ -1,6 +1,7 @@
 # holds all the config variables necesary for the app to run TODO
+from locale import getdefaultlocale
 
-LANGUAGE = 'en_US'
+LANGUAGE = getdefaultlocale()[0].split('_')[0]
 
 # TODO: UI dimensions, debug level
 
