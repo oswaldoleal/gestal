@@ -31,11 +31,11 @@ class OrganizerBox(Gtk.ScrolledWindow):
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
 
-        # TODO: add new project button
         self.add_project_button = Gtk.Button(label="+")
         self.add_project_button.connect('clicked', self.add_project_form)
         self.main_box.pack_start(self.add_project_button, False, False, 0)
         
+        # TODO: each tree view should be its own widget
         self.project_view = Gtk.TreeView()
         cell_renderer = Gtk.CellRendererText()
         col = Gtk.TreeViewColumn("Projects", cell_renderer, text=0)
@@ -46,25 +46,8 @@ class OrganizerBox(Gtk.ScrolledWindow):
         # TODO: add the tags and team tree views
 
     def add_project_form(self, button):
-        # TODO: turn this into its own widget
-        self.add_project_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL)
-        name_label = Gtk.Label()
-        name_label = Gtk.Label('Project Name')
-        self.add_project_box.pack_start(name_label, False, False, 0)
-
-        name_entry = Gtk.Entry()
-        name_entry.set_placeholder_text('Project Name')
-        self.add_project_box.pack_start(name_entry, False, False, 0)
-
-        description_label = Gtk.Label()
-        description_label = Gtk.Label('Project Description')
-        self.add_project_box.pack_start(description_label, False, False, 0)
-
-        description_entry = Gtk.Entry()
-        description_entry.set_placeholder_text('Project Description')
-        self.add_project_box.pack_start(description_entry, False, False, 0)
-
-        self.add_project_box.show_all()
+        # TODO: This should be in the constructor to avoid redeclaration
+        self.add_project_box = AddProjectForm(self.backend, previous_widget = self.add_project_button)
         replace_widget(self.add_project_button, self.add_project_box)
 
     def set_projects(self):
@@ -82,6 +65,51 @@ class OrganizerBox(Gtk.ScrolledWindow):
                     model.append(titer, (child_task.name,))
         
         self.project_view.set_model(model)
+
+class AddProjectForm(Gtk.Box):
+    backend = None
+    previous_widget = None
+
+    def __init__(self, backend, previous_widget = None):
+        super(AddProjectForm, self).__init__(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
+        self.backend = backend
+        if (previous_widget):
+            self.previous_widget = previous_widget
+
+        name_label = Gtk.Label()
+        name_label = Gtk.Label('Project Name')
+        self.pack_start(name_label, False, False, 0)
+
+        self.name_entry = Gtk.Entry()
+        self.name_entry.set_placeholder_text('Project Name')
+        self.pack_start(self.name_entry, False, False, 0)
+
+        description_label = Gtk.Label()
+        description_label = Gtk.Label('Project Description')
+        self.pack_start(description_label, False, False, 0)
+
+        self.description_entry = Gtk.Entry()
+        self.description_entry.set_placeholder_text('Project Description')
+        self.pack_start(self.description_entry, False, False, 0)
+
+        button_holder = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.HORIZONTAL)
+        self.cancel_button = Gtk.Button(label = get_string('cancel'))
+        self.cancel_button.connect('clicked', self.cancel)
+        self.save_button = Gtk.Button(label = get_string('save'))
+        self.save_button.connect('clicked', self.save)
+        button_holder.pack_start(self.cancel_button, True, True, 0)
+        button_holder.pack_start(self.save_button, True, True, 0)
+        self.pack_start(button_holder, True, True, 0)
+
+        self.show_all()
+
+    def cancel(self, button):
+        replace_widget(self, self.previous_widget)
+
+    def save(self, button):
+        self.backend.new_project(name = self.name_entry.get_text(), description = self.description_entry.get_text())
+        # TODO: update the project tree view
+        replace_widget(self, self.previous_widget)
 
 class SettingsBox(Gtk.Box):
     backend = None
@@ -188,6 +216,9 @@ class TaskBox(Gtk.ScrolledWindow):
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
 
+        task_display = TaskDisplay(self.backend)
+        self.main_box.pack_end(task_display, True, True, 0)
+
         for _ in range(50):
             b = Gtk.Button(label="TaskBox")
             self.main_box.pack_end(b, True, True, 0)
@@ -207,3 +238,18 @@ class TaskBoxSearchBar(Gtk.Box):
         self.pack_start(self.search_entry, True, False, 0)
 
     # TODO: create the LoginWindow widgets
+
+class TaskDisplay(Gtk.Box):
+    backend = None
+
+    def __init__(self, backend):
+        super(TaskDisplay, self).__init__(spacing = 1, orientation = Gtk.Orientation.VERTICAL)
+        self.backend = backend
+
+        self.first_row = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.HORIZONTAL)
+        self.date_label = Gtk.Label('88/88/8888')
+        self.name_label = Gtk.Label('Test task name')
+        self.first_row.pack_start(self.date_label, False, False, 0)
+        self.first_row.pack_start(self.name_label, True, True, 0)
+
+        self.pack_start(self.first_row, True, True, 0)
