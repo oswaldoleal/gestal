@@ -26,7 +26,7 @@ class OrganizerBox(Gtk.ScrolledWindow):
         self.backend = backend
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.set_size_request(cfg.ORGANIZER_BOX_MIN_WIDTH, cfg.ORGANIZER_BOX_MIN_HEIGHT)
+        self.set_hexpand(False)
 
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
@@ -38,10 +38,12 @@ class OrganizerBox(Gtk.ScrolledWindow):
         
         self.project_view = Gtk.TreeView()
         cell_renderer = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn(None, cell_renderer, text=0)
+        col = Gtk.TreeViewColumn("Projects", cell_renderer, text=0)
         self.project_view.append_column(col)
         self.set_projects()
         self.main_box.pack_start(self.project_view, True, True, 0)
+
+        # TODO: add the tags and team tree views
 
     def add_project_form(self, button):
         # TODO: turn this into its own widget
@@ -88,11 +90,12 @@ class SettingsBox(Gtk.Box):
         super(SettingsBox, self).__init__(spacing = 5, orientation = Gtk.Orientation.HORIZONTAL)
         self.backend = backend
 
-        self.set_size_request(cfg.SETTINGS_BOX_MIN_WIDTH, cfg.SETTINGS_BOX_MIN_HEIGHT)
+        self.set_vexpand(False)
+        self.set_hexpand(False)
 
-        for _ in range(5):
+        for _ in range(1):
             b = Gtk.Button(label="SettingsBox")
-            self.pack_end(b, True, True, 0)
+            self.pack_end(b, False, False, 0)
 
         # The TreeView section holds the projects as a top level (default project has no label (?))
 
@@ -106,7 +109,6 @@ class DetailBox(Gtk.ScrolledWindow):
 
         # Basic setup (size and orientation)
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.set_size_request(cfg.DETAIL_BOX_MIN_WIDTH, cfg.DETAIL_BOX_MIN_HEIGHT)
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
 
@@ -182,7 +184,6 @@ class TaskBox(Gtk.ScrolledWindow):
         self.backend = backend
 
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.set_size_request(cfg.TASK_BOX_MIN_WIDTH, cfg.TASK_BOX_MIN_HEIGHT)
 
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
@@ -199,7 +200,7 @@ class TaskBoxSearchBar(Gtk.Box):
         super(TaskBoxSearchBar, self).__init__()
         self.backend = backend
 
-        self.set_size_request(cfg.TASK_BOX_SEARCH_BAR_MIN_WIDTH, cfg.TASK_BOX_SEARCH_BAR_MIN_HEIGHT)
+        self.set_vexpand(False)
 
         self.search_entry = Gtk.SearchEntry()
         self.search_entry.set_size_request(int(float(cfg.WINDOW_WIDTH) * 0.5), 1)

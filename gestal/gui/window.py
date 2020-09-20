@@ -5,18 +5,19 @@ from .strings import get_string
 from .widgets import DetailBox, OrganizerBox, SettingsBox, TaskBox, TaskBoxSearchBar
 
 class MainWindow(Gtk.ApplicationWindow):
-    # Left container that holds the project trees
+    # Main view containers
+    main_view = None
+    left_view = None
+    right_view = None
+    
+    # Left view content
     organizer_box = None
-    # Lower left container that holds the project trees
     settings_box = None
-    # Right container that displays the details of an Task / Project / Team
-    detail_box = None
-    # Middle container that displays the task list or other items in list form
-    task_box = None
-    # Bar on top of the Task Box that holds the search bar and some other buttons
+
+    # Right view content
     task_box_search_bar = None
-    # This will hold all the child widgets
-    view = None
+    task_box = None
+    
     # Backend reference
     backend = None
 
@@ -32,30 +33,32 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_default_size(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
         self.set_size_request(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
 
-        self.view = Gtk.Grid()
-        self.add(self.view)
+        # Main View content holder
+        self.main_view = Gtk.Box(spacing = 0, orientation = Gtk.Orientation.HORIZONTAL)
+        self.add(self.main_view)
+        # Left pane container box
+        self.left_view = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
+        self.left_view.set_hexpand(False)
+        self.left_view.set_size_request(cfg.LEFT_PANE_WIDTH, cfg.LEFT_PANE_HEIGHT)
+        self.main_view.pack_start(self.left_view, False, False, 0)
+        # Right pane main content box
+        self.right_view = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
+        self.main_view.pack_start(self.right_view, True, True, 0)
 
-        # TODO: change this for next_to notation
-        self.organizer_box = OrganizerBox(self.backend)
-        self.view.attach(self.organizer_box, 0, 0, 60, 120)
 
-        self.settings_box = SettingsBox(self.backend)
-        self.view.attach_next_to(self.settings_box,self.organizer_box, Gtk.PositionType.BOTTOM, 60, 10)
+        # Organizer Box (left pane)
+        self.organizer_box = OrganizerBox(backend)
+        self.left_view.pack_start(self.organizer_box, True, True, 0)
+        # Settings Bar (left pane)
+        self.settings_box = SettingsBox(backend)
+        self.left_view.pack_start(self.settings_box, False, True, 0)
 
-        self.task_box_search_bar = TaskBoxSearchBar(self.backend)
-        # self.view.attach(self.task_box_search_bar, 60, 0, 100, 1)
-        self.view.attach_next_to(self.task_box_search_bar,self.organizer_box, Gtk.PositionType.RIGHT, 100, 1)
-
-        self.task_box = TaskBox(self.backend)
-        # self.view.attach(self.task_box, 60, 1, 100, 129)
-        self.view.attach_next_to(self.task_box,self.task_box_search_bar, Gtk.PositionType.BOTTOM, 100, 129)
-
-        self.detail_box = DetailBox(self.backend)
-        # self.view.attach(self.detail_box, 160, 0, 40, 130)
-        self.view.attach_next_to(self.detail_box,self.task_box_search_bar, Gtk.PositionType.RIGHT, 40, 130)
-
-        # self.connect("destroy", Gtk.main_quit)
-        # self.set_style()
+        # Search Bar (right pane)
+        self.task_box_search_bar = TaskBoxSearchBar(backend)
+        self.right_view.pack_start(self.task_box_search_bar, False, True, 0)
+        # Task Box (right pane)
+        self.task_box = TaskBox(backend)
+        self.right_view.pack_start(self.task_box, True, True, 0)
 
     # TODO: create the LoginWindow class
 
