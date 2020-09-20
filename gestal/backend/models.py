@@ -3,7 +3,7 @@ from datetime import datetime
 # TODO: Models IDs should be UUID istead of integers
 
 class Base:
-    id = 0
+    id = ''
     creation_date = ''
     __persistence = None
 
@@ -39,9 +39,9 @@ class Base:
 
 class Task(Base):
     # TODO: there should be only one foreign key, the parent id (project / task) with a flag to check the parent type
-    project_id = 0
-    owner_id = 0
-    parent_id = 0
+    project_id = ''
+    owner_id = ''
+    parent_id = ''
     status = ''
     name = ''
     description = ''
@@ -71,7 +71,7 @@ class Task(Base):
             self.due_date = due_date
 
 class Project(Base):
-    owner_id = 0
+    owner_id = ''
     name = ''
     description = ''
 
@@ -91,7 +91,7 @@ class Project(Base):
             self.owner_id = owner_id
 
 class Team(Base):
-    owner_id = 0
+    owner_id = ''
     name = ''
     description = ''
 
@@ -111,8 +111,8 @@ class Team(Base):
             self.owner_id = owner_id
 
 class TeamPermission(Base):
-    team_id = 0
-    user_id = 0
+    team_id = ''
+    user_id = ''
     permissions = 0 # 0 (view), 1 (edit), 2 (owner)
 
     def __init__(self, team_id = None, user_id = None, permissions = None, data = None, persistence = None):
@@ -157,3 +157,34 @@ class User(Base):
             self.last_name = last_name
 
 # TODO: create tags model
+
+class Tag(Base):
+    name = ''
+
+    def __init__(self, name = None, data = None, persistence = None):
+        super(Tag, self).__init__(persistence = persistence)
+        if (data):
+            for key in data.keys():
+                setattr(self, key, data[key])
+
+            return
+
+        if (name):
+            self.name = name
+        
+class TagAssignment(Base):
+    tag_id = ''
+    task_id = ''
+
+    def __init__(self, tag_id = None, task_id = None, data = None, persistence = None):
+        super(TagAssignment, self).__init__(persistence = persistence)
+        if (data):
+            for key in data.keys():
+                setattr(self, key, data[key])
+
+            return
+
+        if (tag_id):
+            self.tag_id = tag_id
+        if (task_id):
+            self.task_id = task_id    

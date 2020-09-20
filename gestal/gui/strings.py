@@ -17,7 +17,9 @@ STRINGS = {
         'task_project_label': 'Task project',
         'task_tags_label': 'Task labels',
         'task_tags_ph': '#urgent #product_owner',
-        'task_save': 'Save task'
+        'task_save': 'Save task',
+        'cancel': 'Cancel',
+        'save': 'Save',
     },
     'es': {
         'window_title': 'Gestal - Organizador de Tareas',

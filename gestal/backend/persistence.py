@@ -2,7 +2,7 @@ from core import config as cfg, info
 from datetime import datetime
 from os import path
 from uuid import uuid4
-from .models import Project, Task, Team, TeamPermission, User
+from .models import Project, Task, Team, TeamPermission, User, Tag, TagAssignment
 import sqlite3
 
 class Persistence():
@@ -53,13 +53,18 @@ class BaseStorage():
         attributes = self.get_attribute_names(type(obj))
 
         data = []
+        id_ind = 0
+        i = 0
         for attribute in attributes:
             if (attribute == 'id'):
                 data.insert(0, getattr(obj, attribute))
+                id_ind = i
             else:
                 data.append(getattr(obj, attribute))
+            
+            i += 1
 
-        return data
+        return data, id_ind
 
 class DefaultStorage(BaseStorage):
     name = 'default_storage'
@@ -80,7 +85,7 @@ class DefaultStorage(BaseStorage):
 
         query = f'INSERT INTO {Project.__name__} VALUES (?, ?, ?, ?, ?)'
         # TODO: set the proper user id to handle the correct username avoiding clashes with the cloud
-        cur.execute(query, (datetime.now().isoformat(), 'Ungrouped tasks', 1, 'Ungrouped', 1))
+        cur.execute(query, (datetime.now().isoformat(), 'Ungrouped tasks', '1', 'Ungrouped', '1'))
 
         con.commit()
 
@@ -89,7 +94,7 @@ class DefaultStorage(BaseStorage):
     def get_table_queries(self):
         queries = []
 
-        for type in [Task, Project, Team, TeamPermission, User]:
+        for type in [Task, Project, Team, TeamPermission, User, Tag, TagAssignment]:
             attributes = self.get_attribute_names(type)
             attributes_type = [a + ' ' + ('INTEGER' if isinstance(getattr(type, a), int) else 'TEXT' if isinstance(getattr(type, a), str) else 'REAL' if isinstance(getattr(type, a), float) else 'NULL') for a in attributes]
             table_name = type.__name__
@@ -102,15 +107,16 @@ class DefaultStorage(BaseStorage):
 
     def insert(self, obj):
         id = self.get_new_id(type(obj))
-        data = self.get_data(obj)
-        data[0] = id
+        data, id_ind = self.get_data(obj)
+        data = data[1:]
+        data.insert(id_ind, id)
 
         query = f'insert into {type(obj).__name__} values (' + ','.join(['?'] * (len(data))) + ')'
         self.execute(query, data)
 
     def update(self, obj):
         attributes = ','.join([a + ' = ?' for a in self.get_attribute_names(type(obj)) if (a != 'id')])
-        data = self.get_data(obj)
+        data, _ = self.get_data(obj)
         data = data[1:] + data[:1]
 
         query = f'update {type(obj).__name__} set {attributes} where id = ?'
@@ -133,12 +139,14 @@ class DefaultStorage(BaseStorage):
 
     def get_all(self, type, filter = None):
         query = f'select * from {type.__name__}'
+        data = []
         if (filter):
             query += ' where'
             for key in filter.keys():
-                query += f' {key} = {filter[key]}'
+                query += f' {key} = ?'
+                data.append(filter[key])
         
-        rows = self.execute(query)
+        rows = self.execute(query, data = data)
 
         attribute_names = self.get_attribute_names(type)
         objects = []
