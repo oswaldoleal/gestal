@@ -2,7 +2,7 @@ from core import config as cfg
 from gi.repository import Gdk, Gtk
 from os.path import abspath, dirname, join
 from .strings import get_string
-from .widgets import DetailBox, OrganizerBox, SettingsBox, TaskBox, TaskBoxSearchBar
+from .widgets import OrganizerBox, SettingsBox, TaskBox, TaskBoxSearchBar
 
 class MainWindow(Gtk.ApplicationWindow):
     # Main view containers

@@ -42,12 +42,12 @@ class Task(Base):
     project_id = ''
     owner_id = ''
     parent_id = ''
-    status = ''
+    status = False
     name = ''
     description = ''
     due_date = ''
 
-    def __init__(self, name = None, owner_id = None, parent_id = None, description = None, project_id = None, status = None, due_date = None, data = None, persistence = None):
+    def __init__(self, name = None, owner_id = None, parent_id = None, description = None, project_id = None, status = False, due_date = None, data = None, persistence = None):
         super(Task, self).__init__(persistence = persistence)
         if (data):
             for key in data.keys():

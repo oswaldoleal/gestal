@@ -31,7 +31,7 @@ class Persistence():
         pass # TODO
 
     def get_all(self, type, filter = None):
-        return self.storage_methods[0].get_all(type, filter = filter)
+        return self.storage_methods[0].get_all(type, filter = filter, persistence = self)
 
 class BaseStorage():
     name = None
@@ -137,7 +137,7 @@ class DefaultStorage(BaseStorage):
             else:
                 id = str(uuid4())
 
-    def get_all(self, type, filter = None):
+    def get_all(self, type, filter = None, persistence = None):
         query = f'select * from {type.__name__}'
         data = []
         if (filter):
@@ -154,7 +154,7 @@ class DefaultStorage(BaseStorage):
             data = {}
             for i in range(len(attribute_names)):
                 data[attribute_names[i]] = row[i]
-            obj = type(data = data)
+            obj = type(data = data, persistence = persistence)
             objects.append(obj)
 
         return objects

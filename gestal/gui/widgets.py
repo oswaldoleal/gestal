@@ -1,4 +1,5 @@
 from core import config as cfg
+from datetime import datetime
 from gi.repository import Gtk
 from .strings import get_string
 
@@ -127,82 +128,6 @@ class SettingsBox(Gtk.Box):
 
         # The TreeView section holds the projects as a top level (default project has no label (?))
 
-class DetailBox(Gtk.ScrolledWindow):
-    main_box = None
-    backend = None
-
-    def __init__(self, backend):
-        super(DetailBox, self).__init__(hexpand = True, vexpand = True)
-        self.backend = backend
-
-        # Basic setup (size and orientation)
-        self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
-        self.add(self.main_box)
-
-        # Task Name section
-        self.task_name_label = Gtk.Label(get_string('task_name_label'))
-        self.main_box.pack_start(self.task_name_label, False, False, 0)
-
-        self.task_name_entry = Gtk.Entry()
-        self.task_name_entry.set_placeholder_text(get_string('task_name_label'))
-        self.main_box.pack_start(self.task_name_entry, False, False, 0)
-
-        # Task Description section
-        self.task_description_label = Gtk.Label(get_string('task_description_label'))
-        self.main_box.pack_start(self.task_description_label, False, False, 0)
-
-        self.task_description_entry = Gtk.Entry()
-        self.task_description_entry.set_placeholder_text(get_string('task_description_label'))
-        self.main_box.pack_start(self.task_description_entry, False, False, 0)
-
-        # TODO: this should be inferred from the current project selection (?) 
-        # Task Project section
-        self.task_project_label = Gtk.Label(get_string('task_project_label'))
-        self.main_box.pack_start(self.task_project_label, False, False, 0)
-
-        self.task_project_combobox = Gtk.ComboBox()
-        renderer_text = Gtk.CellRendererText()
-        self.task_project_combobox.pack_start(renderer_text, True)
-        self.task_project_combobox.add_attribute(renderer_text, "text", 0)
-        self.task_project_combobox.set_model(self.get_projects())
-        self.main_box.pack_start(self.task_project_combobox, False, False, 0)
-
-        # TODO: turn this calendar widget into a popover for a label
-        # Task Due Date section
-        self.task_due_date_label = Gtk.Label(get_string('task_due_date_label'))
-        self.main_box.pack_start(self.task_due_date_label, False, False, 0)
-
-        self.task_due_date_calendar = Gtk.Calendar()
-        self.main_box.pack_start(self.task_due_date_calendar, False, False, 0)
-
-        # Task Tag section TODO
-        self.task_tags_label = Gtk.Label(get_string('task_tags_label'))
-        self.main_box.pack_start(self.task_tags_label, False, False, 0)
-
-        self.task_tags_entry = Gtk.Entry()
-        self.task_tags_entry.set_placeholder_text(get_string('task_tags_ph'))
-        self.main_box.pack_start(self.task_tags_entry, False, False, 0)
-
-        # Task Color section TODO: this should be an entry widget with a popover color selector (hex? or premade)
-
-        # Save task section
-        self.task_save_button = Gtk.Button(label = get_string('task_save'))
-        self.main_box.pack_start(self.task_save_button, False, False, 0)
-
-    def get_projects(self):
-        # TODO: get the projects from the backend
-        project_store = Gtk.ListStore(str)
-        projects = [
-            "None",
-            "UCAB",
-            "Gestal",
-        ]
-        for project in projects:
-            project_store.append([project])
-
-        return project_store
-
 class TaskBox(Gtk.ScrolledWindow):
     main_box = None
     backend = None
@@ -215,13 +140,14 @@ class TaskBox(Gtk.ScrolledWindow):
 
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
+        
+        # TODO: missing add task button
 
-        task_display = TaskDisplay(self.backend)
-        self.main_box.pack_end(task_display, True, True, 0)
-
-        for _ in range(50):
-            b = Gtk.Button(label="TaskBox")
-            self.main_box.pack_end(b, True, True, 0)
+        # TODO: filter for the current project
+        tasks = backend.get_tasks()
+        for task in tasks:
+            task_display = TaskDisplay(task)
+            self.main_box.pack_start(task_display, False, True, 0)
 
 class TaskBoxSearchBar(Gtk.Box):
     search_entry = None
@@ -240,16 +166,24 @@ class TaskBoxSearchBar(Gtk.Box):
     # TODO: create the LoginWindow widgets
 
 class TaskDisplay(Gtk.Box):
-    backend = None
+    task = None
 
-    def __init__(self, backend):
-        super(TaskDisplay, self).__init__(spacing = 1, orientation = Gtk.Orientation.VERTICAL)
-        self.backend = backend
+    def __init__(self, task):
+        super(TaskDisplay, self).__init__(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
+        self.task = task
 
         self.first_row = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.HORIZONTAL)
-        self.date_label = Gtk.Label('88/88/8888')
-        self.name_label = Gtk.Label('Test task name')
+        date = datetime.strptime(task.creation_date, "%Y-%m-%dT%H:%M:%S.%f")
+        self.date_label = Gtk.Label(str(date.date()))
+        self.name_label = Gtk.Label(task.name)
         self.first_row.pack_start(self.date_label, False, False, 0)
         self.first_row.pack_start(self.name_label, True, True, 0)
 
+        self.description_label = Gtk.Label(task.description)
+        self.description_label.set_line_wrap(True)
+        self.tag_label = Gtk.Label('#urgent #PO' * 4)
+        self.tag_label.set_line_wrap(True)
+
         self.pack_start(self.first_row, True, True, 0)
+        self.pack_start(self.description_label, True, True, 0)
+        self.pack_start(self.tag_label, True, True, 0)
