@@ -29,12 +29,12 @@ class Base:
 
     @staticmethod
     def get(type, id, persistence):
-        # TODO: infer type from self
+        # TODO: infer type from self / changing this to a classmethod
         return persistence.get(type, id)
 
     @staticmethod
     def get_all(type, persistence, filter = None):
-        # TODO: infer type from self
+        # TODO: infer type from self / changing this to a classmethod
         return persistence.get_all(type, filter = filter)
 
 class Task(Base):
