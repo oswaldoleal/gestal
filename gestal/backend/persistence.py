@@ -1,4 +1,5 @@
 from core import config as cfg, info
+from core.log import Log
 from datetime import datetime
 from os import path
 from uuid import uuid4
@@ -13,16 +14,22 @@ class Persistence():
         self.storage_methods.append(ds)
 
     def insert(self, obj):
+        Log.info(f'Performed INSERT into {type(obj).__name__}')
+
         # TODO return [storage.insert(obj) for storage in self.storage_methods].all()
         for storage in self.storage_methods:
             storage.insert(obj)
 
     def update(self, obj):
+        Log.info(f'Performed UPDATE into {type(obj).__name__}')
+
         # TODO return [storage.update(obj) for storage in self.storage_methods].all()
         for storage in self.storage_methods:
             storage.update(obj)
 
     def delete(self, obj):
+        Log.info(f'Performed DELETE from {type(obj).__name__}')
+
         # TODO return [storage.delete(obj) for storage in self.storage_methods].all()
         for storage in self.storage_methods:
             storage.delete(obj)
@@ -31,6 +38,8 @@ class Persistence():
         pass # TODO
 
     def get_all(self, type, filter = None):
+        Log.info(f'Performed SELECT * from {type.__name__}', origin = 'Persistence')
+
         return self.storage_methods[0].get_all(type, filter = filter, persistence = self)
 
 class BaseStorage():
@@ -71,6 +80,8 @@ class DefaultStorage(BaseStorage):
     DB_NAME = ''
 
     def __init__(self):
+        Log.info('Initialized Storage', origin = 'DefaultStorage')
+
         self.DB_NAME = f'{info.NAME}_{self.name}.db'
         
         if (path.isfile(f'{cfg.DB_PATH}{self.DB_NAME}')):

@@ -3,8 +3,11 @@
 import gi
 gi.require_version('Gdk', '3.0')
 
+from core.log import Log
 from gui.application import Application
 
+# TODO: add option parsing support from the command line
 
 app = Application('org.gnome.gestal')
+Log.info('The app has been loaded', origin = 'gestal')
 app.run()
