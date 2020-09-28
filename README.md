@@ -44,9 +44,6 @@ $ cd gestal
 $ ./gestal
 ```
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
-
-
 ## Download
 
 You can [download](https://github.com/oswaldoleal/gestal/releases/tag/v0.01.01) the latest version of Gestal for Linux.
