@@ -9,7 +9,7 @@
 <h4 align="center">A simple, yet featureful task organizer.</h4>
 
 <p align="center">
-  <a href="http://paypal.me/oswaldolealrodriguez">
+  <a href="http://paypal.me/oswaldolealrodriguez target="_blank">
     <img src="https://img.shields.io/badge/%24-paypal-yellow">
   </a>
   <a href="#TODO">
@@ -52,8 +52,8 @@ You can [download](https://github.com/oswaldoleal/gestal/releases/tag/v0.01.01) 
 
 ## Related
 
-[gestal-web](https://google.com/?search=TODO) - Web version of Gestal
-[gestal-mobile](https://google.com/?search=TODO) - Mobile version of Gestal
+* [gestal-web](https://google.com/?search=TODO) - Web version of Gestal
+* [gestal-mobile](https://google.com/?search=TODO) - Mobile version of Gestal
 
 ## Support
 
