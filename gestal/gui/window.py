@@ -47,17 +47,17 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
         # Organizer Box (left pane)
-        self.organizer_box = OrganizerBox(backend)
+        self.organizer_box = OrganizerBox(backend, window = self)
         self.left_view.pack_start(self.organizer_box, True, True, 0)
         # Settings Bar (left pane)
-        self.settings_box = SettingsBox(backend)
+        self.settings_box = SettingsBox(backend, window = self)
         self.left_view.pack_start(self.settings_box, False, True, 0)
 
         # Search Bar (right pane)
-        self.task_box_search_bar = TaskBoxSearchBar(backend)
+        self.task_box_search_bar = TaskBoxSearchBar(backend, window = self)
         self.right_view.pack_start(self.task_box_search_bar, False, True, 0)
         # Task Box (right pane)
-        self.task_box = TaskBox(backend)
+        self.task_box = TaskBox(backend, window = self)
         self.right_view.pack_start(self.task_box, True, True, 0)
 
     # TODO: create the LoginWindow class
@@ -74,3 +74,9 @@ class MainWindow(Gtk.ApplicationWindow):
             screen, provider,
             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+
+    def update_from_backend(self):
+        # TODO: implement update functions on every widget and call the necesary ones from here
+        # This is supposed to be a callback function for every creation / deletion action
+        self.organizer_box.project_view.set_projects()
+        self.organizer_box.tags_view.set_tags()
