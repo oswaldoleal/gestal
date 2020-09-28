@@ -37,7 +37,6 @@ $ git clone https://github.com/oswaldoleal/gestal.git
 $ pip3 install # TODO
 
 # Go into the repository
-$ cd electron-markdownify
 $ cd gestal
 
 # Run the app
