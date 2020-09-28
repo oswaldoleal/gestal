@@ -14,21 +14,21 @@ class Persistence():
         self.storage_methods.append(ds)
 
     def insert(self, obj):
-        Log.info(f'Performed INSERT into {type(obj).__name__}')
+        Log.info(f'Performed INSERT into {type(obj).__name__}', origin = 'Persistence')
 
         # TODO return [storage.insert(obj) for storage in self.storage_methods].all()
         for storage in self.storage_methods:
             storage.insert(obj)
 
     def update(self, obj):
-        Log.info(f'Performed UPDATE into {type(obj).__name__}')
+        Log.info(f'Performed UPDATE into {type(obj).__name__}', origin = 'Persistence')
 
         # TODO return [storage.update(obj) for storage in self.storage_methods].all()
         for storage in self.storage_methods:
             storage.update(obj)
 
     def delete(self, obj):
-        Log.info(f'Performed DELETE from {type(obj).__name__}')
+        Log.info(f'Performed DELETE from {type(obj).__name__}', origin = 'Persistence')
 
         # TODO return [storage.delete(obj) for storage in self.storage_methods].all()
         for storage in self.storage_methods:
