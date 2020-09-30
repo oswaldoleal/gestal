@@ -149,14 +149,16 @@ class TeamTree(Gtk.TreeView):
     def set_teams(self):
         teams = self.backend.get_teams()
 
-        model = Gtk.TreeStore(str)
+        team_icon = util.get_icon('team_icon.svg')
+
+        model = Gtk.TreeStore(type(team_icon), str)
         for team in teams:
-            piter = model.append(None, (team.name,))
+            piter = model.append(None, (team_icon, team.name,))
 
             # TODO: turn this into a recursive function
             for team_permission in self.backend.get_team_permissions(filter = {'team_id': team.id}):
                 user = self.backend.get_user(id = team_permission.user_id)
-                model.append(piter, (user.username,))
+                model.append(piter, (None, user.username,))
         
         self.set_model(model)
 
