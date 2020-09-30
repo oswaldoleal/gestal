@@ -61,10 +61,8 @@ class MainWindow(Gtk.ApplicationWindow):
     # TODO: create the LoginWindow class
 
     def set_style(self):
-        gui_path = abspath(dirname(__file__))
-
         provider = Gtk.CssProvider()
-        provider.load_from_path(join(gui_path, "css/style.css"))
+        provider.load_from_path(util.get_file_path('style.css', folder = 'gui/css'))
         screen = Gdk.Display.get_default_screen(Gdk.Display.get_default())
         # I was unable to found instrospected version of this
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION = 600
