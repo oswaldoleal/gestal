@@ -1,4 +1,4 @@
-from core import config as cfg
+from core import config as cfg, util
 from core.log import Log
 from datetime import datetime
 from gi.repository import Gtk
@@ -37,7 +37,7 @@ class OrganizerBox(Gtk.ScrolledWindow):
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
 
-        self.add_project_button = Gtk.Button(label="+")
+        self.add_project_button = Gtk.Button(label = '+')
         self.add_project_button.connect('clicked', self.add_project_form)
         self.main_box.pack_start(self.add_project_button, False, False, 0)
         
@@ -65,23 +65,33 @@ class ProjectTree(Gtk.TreeView):
         self.backend = backend
 
         cell_renderer = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn("Projects", cell_renderer, text=0)
+        # col = Gtk.TreeViewColumn('Projects', cell_renderer, text=0)
+        col = Gtk.TreeViewColumn('Projects')
+        icon = Gtk.CellRendererPixbuf()
+        name = Gtk.CellRendererText()
+        col.pack_start(icon, False)
+        col.pack_start(name, True)
+        col.add_attribute(icon, 'pixbuf', 0)
+        col.add_attribute(name, 'text', 1)
+
         self.append_column(col)
         self.set_projects()
 
     def set_projects(self):
         projects = self.backend.get_projects()
 
-        model = Gtk.TreeStore(str)
+        project_icon = util.get_icon('project_icon.svg')
+
+        model = Gtk.TreeStore(type(project_icon), str)
         for project in projects:
-            piter = model.append(None, (project.name,))
+            piter = model.append(None, (project_icon, project.name,))
 
             # TODO: turn this into a recursive function
             for task in self.backend.get_tasks(filter = {'project_id': project.id}):
-                titer = model.append(piter, (task.name,))
+                titer = model.append(piter, (None, task.name,))
 
                 for child_task in self.backend.get_tasks(filter = {'parent_id': task.id}):
-                    model.append(titer, (child_task.name,))
+                    model.append(titer, (None, child_task.name,))
         
         self.set_model(model)
 
@@ -93,7 +103,7 @@ class TagTree(Gtk.TreeView):
         self.backend = backend
 
         cell_renderer = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn("Tags", cell_renderer, text=0)
+        col = Gtk.TreeViewColumn('Tags', cell_renderer, text=0)
         self.append_column(col)
         self.set_tags()
 
@@ -119,7 +129,7 @@ class TeamTree(Gtk.TreeView):
         self.backend = backend
 
         cell_renderer = Gtk.CellRendererText()
-        col = Gtk.TreeViewColumn("Teams", cell_renderer, text=0)
+        col = Gtk.TreeViewColumn('Teams', cell_renderer, text=0)
         self.append_column(col)
         self.set_teams()
 
@@ -204,7 +214,7 @@ class SettingsBox(Gtk.Box):
         self.set_hexpand(False)
 
         for _ in range(1):
-            b = Gtk.Button(label="SettingsBox")
+            b = Gtk.Button(label='SettingsBox')
             self.pack_end(b, False, False, 0)
 
         # The TreeView section holds the projects as a top level (default project has no label (?))
@@ -227,7 +237,7 @@ class TaskBox(Gtk.ScrolledWindow):
         self.add(self.main_box)
         
         # TODO: missing add task button
-        self.add_task_button = Gtk.Button(label="+")
+        self.add_task_button = Gtk.Button(label = '+')
         self.add_task_button.connect('clicked', self.add_task_form)
         self.main_box.pack_start(self.add_task_button, False, False, 0)
 
@@ -337,7 +347,7 @@ class TaskDisplay(Gtk.Box):
             self.window = window
 
         self.first_row = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.HORIZONTAL)
-        date = datetime.strptime(task.creation_date, "%Y-%m-%dT%H:%M:%S.%f")
+        date = datetime.strptime(task.creation_date, '%Y-%m-%dT%H:%M:%S.%f')
         self.date_label = Gtk.Label(str(date.date()))
         self.name_label = Gtk.Label(task.name)
         self.first_row.pack_start(self.date_label, False, False, 0)

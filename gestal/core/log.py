@@ -9,7 +9,7 @@ class Log():
     # TODO: move the console colors to their own class
     @classmethod
     def get_str(cls, message, origin = '', type = ''):
-        date_str = datetime.now().strftime("%Y%m%d - %H:%M:%S")
+        date_str = datetime.now().strftime('%Y%m%d %H:%M:%S')
         return cls.pattern.format(date_str, type, origin, message)
 
     @classmethod
