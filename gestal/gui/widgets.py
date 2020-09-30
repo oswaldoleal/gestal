@@ -52,6 +52,7 @@ class OrganizerBox(Gtk.ScrolledWindow):
         # TODO: add the tags and team tree views
 
     def add_project_form(self, button):
+        Log.info('Clicked add project button', origin = 'OrganizerBox')
         # TODO: This should be in the constructor to avoid redeclaration
         self.add_project_box = AddProjectForm(self.backend, previous_widget = self.add_project_button, window = self.window)
         replace_widget(self.add_project_button, self.add_project_box)
@@ -237,6 +238,7 @@ class TaskBox(Gtk.ScrolledWindow):
             self.main_box.pack_start(task_display, False, True, 0)
 
     def add_task_form(self, button):
+        Log.info('Clicked add task button', origin = 'TaskBox')
         # TODO: This should be in the constructor to avoid redeclaration
         self.add_task_box = AddTaskForm(self.backend, previous_widget = self.add_task_button, window = self.window)
         replace_widget(self.add_task_button, self.add_task_box)
