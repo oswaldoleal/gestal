@@ -25,7 +25,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.backend = backend
 
-        # TODO: add the app icon to the window
         self.set_icon_from_file(util.get_file_path('icon.png'))
         self.set_title(get_string('window_title'))
         self.set_default_size(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
@@ -58,8 +57,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.task_box = TaskBox(backend, window = self)
         self.right_view.pack_start(self.task_box, True, True, 0)
 
-    # TODO: create the LoginWindow class
-
     def set_style(self):
         provider = Gtk.CssProvider()
         provider.load_from_path(util.get_file_path('style.css', folder = 'gui/css'))
@@ -76,3 +73,5 @@ class MainWindow(Gtk.ApplicationWindow):
         # This is supposed to be a callback function for every creation / deletion action
         self.organizer_box.project_view.set_projects()
         self.organizer_box.tags_view.set_tags()
+
+# TODO: create the LoginWindow class

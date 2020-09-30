@@ -18,7 +18,6 @@ def replace_widget(current, new):
     for name, value in props.items():
         container.child_set_property(new, name, value)
 
-# Change this for a scrollable one TODO
 class OrganizerBox(Gtk.ScrolledWindow):
     main_box = None
     backend = None
@@ -41,15 +40,12 @@ class OrganizerBox(Gtk.ScrolledWindow):
         self.add_project_button.connect('clicked', self.add_project_form)
         self.main_box.pack_start(self.add_project_button, False, False, 0)
         
-        # TODO: each tree view should be its own widget
         self.project_view = ProjectTree(self.backend, window = self.window)
         self.main_box.pack_start(self.project_view, True, True, 0)
-        self.tags_view = TagTree(self.backend)
+        self.tags_view = TagTree(self.backend, window = self.window)
         self.main_box.pack_start(self.tags_view, True, True, 0)
-        self.team_view = TeamTree(self.backend)
+        self.team_view = TeamTree(self.backend, window = self.window)
         self.main_box.pack_start(self.team_view, True, True, 0)
-
-        # TODO: add the tags and team tree views
 
     def add_project_form(self, button):
         Log.info('Clicked add project button', origin = 'OrganizerBox')
@@ -114,10 +110,13 @@ class ProjectTree(Gtk.TreeView):
 
 class TagTree(Gtk.TreeView):
     backend = None
+    window = None
     
-    def __init__(self, backend):
+    def __init__(self, backend, window = None):
         super(TagTree, self).__init__()
         self.backend = backend
+        if (window):
+            self.window = window
 
         cell_renderer = Gtk.CellRendererText()
         col = Gtk.TreeViewColumn('Tags', cell_renderer, text=0)
@@ -140,10 +139,13 @@ class TagTree(Gtk.TreeView):
 
 class TeamTree(Gtk.TreeView):
     backend = None
+    window = None
     
-    def __init__(self, backend):
+    def __init__(self, backend, window = None):
         super(TeamTree, self).__init__()
         self.backend = backend
+        if (window):
+            self.window = window
 
         cell_renderer = Gtk.CellRendererText()
         col = Gtk.TreeViewColumn('Teams', cell_renderer, text=0)
@@ -214,7 +216,6 @@ class AddProjectForm(Gtk.Box):
     def save(self, button):
         Log.info('Clicked save button', origin = 'AddProjectForm')
         self.backend.new_project(name = self.name_entry.get_text(), description = self.description_entry.get_text())
-        # TODO: update the project tree view
         replace_widget(self, self.previous_widget)
         self.window.update_from_backend()
 
@@ -255,11 +256,10 @@ class TaskBox(Gtk.ScrolledWindow):
         self.main_box = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.add(self.main_box)
         
-        # TODO: missing add task button
         self.add_task_button = Gtk.Button(label = '+')
         self.add_task_button.connect('clicked', self.add_task_form)
 
-        # TODO: filter for the current project
+        # TODO: save current selection or access tree view to get context for add_task
         
     def set_tasks(self, filter):
         Log.info(f'Setting task with filter = {filter}', origin = 'TaskBox')
@@ -339,7 +339,6 @@ class AddTaskForm(Gtk.Box):
     def save(self, button):
         Log.info('Clicked save button', origin = 'AddTaskForm')
         self.backend.new_task(name = self.name_entry.get_text(), description = self.description_entry.get_text(), tags = self.tags_entry.get_text())
-        # TODO: update the project tree view
         replace_widget(self, self.previous_widget)
         self.window.update_from_backend()
 
@@ -361,7 +360,7 @@ class TaskBoxSearchBar(Gtk.Box):
         self.search_entry.set_size_request(int(float(cfg.WINDOW_WIDTH) * 0.5), 1)
         self.pack_start(self.search_entry, True, False, 0)
 
-    # TODO: create the LoginWindow widgets
+# TODO: create the LoginWindow widgets
 
 class TaskDisplay(Gtk.Box):
     task = None

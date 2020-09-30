@@ -1,9 +1,6 @@
-# holds all the config variables necesary for the app to run TODO
 from locale import getdefaultlocale
 
 LANGUAGE = getdefaultlocale()[0].split('_')[0]
-
-# TODO: UI dimensions, debug level
 
 # 1.5:1 aspect ratio (in grid of 200 columns x 130 rows)
 # ratio

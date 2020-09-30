@@ -171,8 +171,6 @@ class DefaultStorage(BaseStorage):
         return objects
 
     def execute(self, query, data = ()):
-        # TODO
-
         con = sqlite3.connect(self.DB_NAME)
         cur = con.cursor()
 

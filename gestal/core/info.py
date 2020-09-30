@@ -1,5 +1,3 @@
-# holds information about the app TODO: delete this
-
 VERSION = '0.01.0'
 # Preferably in lower case and without white space TODO: maybe this should be separated in two variables
 NAME = 'Gestal'

@@ -9,7 +9,6 @@ class Backend:
         self.persistence = Persistence()
 
     ## TASK
-    # TODO: new_task
     def new_task(self, name = None, description = None, due_date = None, tags = None):
         # TODO: properly handle the owner id application wide
         # TODO: handle the parent_id
@@ -24,7 +23,6 @@ class Backend:
         return Task.get_all(Task, self.persistence, filter = filter)
 
     ## PROJECT
-    # TODO: new_project
     def new_project(self, name = None, description = None):
         # TODO: properly handle the owner id application wide
         project = Project(owner_id = 'oswaldo', name = name, description = description, persistence = self.persistence)

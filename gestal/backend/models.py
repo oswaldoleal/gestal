@@ -38,7 +38,6 @@ class Base:
         return persistence.get_all(type, filter = filter)
 
 class Task(Base):
-    # TODO: there should be only one foreign key, the parent id (project / task) with a flag to check the parent type
     project_id = ''
     owner_id = ''
     parent_id = ''
@@ -155,8 +154,6 @@ class User(Base):
             self.first_name = first_name
         if (last_name):
             self.last_name = last_name
-
-# TODO: create tags model
 
 class Tag(Base):
     name = ''
