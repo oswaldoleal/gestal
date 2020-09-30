@@ -104,8 +104,12 @@ class ProjectTree(Gtk.TreeView):
     def on_selection(self, selection):
         model, tree_iter = selection.get_selected()
         if (tree_iter):
-            Log.info(f'Selected project with id = {model[tree_iter][2]}', origin = 'ProjectTree')
-            self.window.task_box.set_tasks(filter = {'project_id': model[tree_iter][2]})
+            if (model[tree_iter][2]):
+                Log.info(f'Selected project with id = {model[tree_iter][2]}', origin = 'ProjectTree')
+                self.window.task_box.set_tasks(filter = {'project_id': model[tree_iter][2]})
+            else:
+                Log.info('Selected task', origin = 'ProjectTree')
+                # TODO: scroll to task when one is selected
 
 
 class TagTree(Gtk.TreeView):
