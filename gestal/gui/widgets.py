@@ -42,7 +42,7 @@ class OrganizerBox(Gtk.ScrolledWindow):
         self.main_box.pack_start(self.add_project_button, False, False, 0)
         
         # TODO: each tree view should be its own widget
-        self.project_view = ProjectTree(self.backend)
+        self.project_view = ProjectTree(self.backend, window = self.window)
         self.main_box.pack_start(self.project_view, True, True, 0)
         self.tags_view = TagTree(self.backend)
         self.main_box.pack_start(self.tags_view, True, True, 0)
@@ -59,10 +59,13 @@ class OrganizerBox(Gtk.ScrolledWindow):
 
 class ProjectTree(Gtk.TreeView):
     backend = None
+    window = None
     
-    def __init__(self, backend):
+    def __init__(self, backend, window = None):
         super(ProjectTree, self).__init__()
         self.backend = backend
+        if (window):
+            self.window = window
 
         cell_renderer = Gtk.CellRendererText()
         # col = Gtk.TreeViewColumn('Projects', cell_renderer, text=0)
@@ -74,6 +77,9 @@ class ProjectTree(Gtk.TreeView):
         col.add_attribute(icon, 'pixbuf', 0)
         col.add_attribute(name, 'text', 1)
 
+        selection = self.get_selection()
+        selection.connect('changed', self.on_selection)
+
         self.append_column(col)
         self.set_projects()
 
@@ -82,18 +88,25 @@ class ProjectTree(Gtk.TreeView):
 
         project_icon = util.get_icon('project_icon.svg')
 
-        model = Gtk.TreeStore(type(project_icon), str)
+        model = Gtk.TreeStore(type(project_icon), str, str)
         for project in projects:
-            piter = model.append(None, (project_icon, project.name,))
+            piter = model.append(None, (project_icon, project.name, project.id))
 
             # TODO: turn this into a recursive function
             for task in self.backend.get_tasks(filter = {'project_id': project.id}):
-                titer = model.append(piter, (None, task.name,))
+                titer = model.append(piter, (None, task.name, None))
 
                 for child_task in self.backend.get_tasks(filter = {'parent_id': task.id}):
-                    model.append(titer, (None, child_task.name,))
+                    model.append(titer, (None, child_task.name, None))
         
         self.set_model(model)
+
+    def on_selection(self, selection):
+        model, tree_iter = selection.get_selected()
+        if (tree_iter):
+            Log.info(f'Selected project with id = {model[tree_iter][2]}', origin = 'ProjectTree')
+            self.window.task_box.set_tasks(filter = {'project_id': model[tree_iter][2]})
+
 
 class TagTree(Gtk.TreeView):
     backend = None
@@ -239,13 +252,22 @@ class TaskBox(Gtk.ScrolledWindow):
         # TODO: missing add task button
         self.add_task_button = Gtk.Button(label = '+')
         self.add_task_button.connect('clicked', self.add_task_form)
-        self.main_box.pack_start(self.add_task_button, False, False, 0)
 
         # TODO: filter for the current project
-        tasks = backend.get_tasks()
+        
+    def set_tasks(self, filter):
+        Log.info(f'Setting task with filter = {filter}', origin = 'TaskBox')
+        for child in self.main_box.get_children():
+            self.main_box.remove(child)
+
+        self.main_box.pack_start(self.add_task_button, False, False, 0)
+
+        tasks = self.backend.get_tasks(filter = filter)
         for task in tasks:
             task_display = TaskDisplay(task, window = self.window)
             self.main_box.pack_start(task_display, False, True, 0)
+        
+        self.show_all()
 
     def add_task_form(self, button):
         Log.info('Clicked add task button', origin = 'TaskBox')
