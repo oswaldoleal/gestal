@@ -1,6 +1,5 @@
-from core import config as cfg
+from core import config as cfg, util
 from gi.repository import Gdk, Gtk
-from os.path import abspath, dirname, join
 from .strings import get_string
 from .widgets import OrganizerBox, SettingsBox, TaskBox, TaskBoxSearchBar
 
@@ -27,9 +26,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backend = backend
 
         # TODO: add the app icon to the window
-        gestal_path = abspath(dirname(__file__)).split('gui')[0]
-        self.set_icon_from_file(join(gestal_path, "data/icon.png"))
-        self.set_title(get_string("window_title"))
+        self.set_icon_from_file(util.get_file_path('icon.png'))
+        self.set_title(get_string('window_title'))
         self.set_default_size(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
         self.set_size_request(cfg.WINDOW_WIDTH, cfg.WINDOW_HEIGHT)
 
