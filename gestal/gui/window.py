@@ -1,7 +1,8 @@
-from core import config as cfg, util
+from core import util
 from gi.repository import Gdk, Gtk
 from .strings import get_string
 from .widgets import OrganizerBox, SettingsBox, TaskBox, TaskBoxSearchBar
+import core.config as cfg
 
 class MainWindow(Gtk.ApplicationWindow):
     # Main view containers

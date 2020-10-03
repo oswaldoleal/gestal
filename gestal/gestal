@@ -2,10 +2,27 @@
 import gi
 gi.require_version('Gdk', '3.0')
 
+from argparse import ArgumentParser
 from core.log import Log
 from gui.application import Application
+import core.config as cfg
+import core.info as info
 
-# TODO: add option parsing support from the command line
+parser = ArgumentParser(description = info.DESCRIPTION)
+parser.add_argument('--verbose', '-v', type = int, help = 'Level of debugging info')
+parser.add_argument('--log-path', '-l', type = str, help = 'Custom path to save the log file')
+parser.add_argument('--db-path', '-d', type = str, help = 'Custom path to save the database')
+args = parser.parse_args()
+
+if args.verbose:
+    cfg.VERBOSE = args.verbose
+    Log.debug(f'Verbose level set to {cfg.VERBOSE}', origin = 'gestal', level = 1)
+if args.log_path:
+    cfg.LOG_PATH = args.log_path
+    Log.debug(f'Log path set to {cfg.LOG_PATH}', origin = 'gestal', level = 1)
+if args.db_path:
+    cfg.DB_PATH = args.db_path
+    Log.debug(f'Database path set to {cfg.DB_PATH}', origin = 'gestal', level = 1)
 
 app = Application('org.gnome.gestal')
 Log.info('The app has been loaded', origin = 'gestal')

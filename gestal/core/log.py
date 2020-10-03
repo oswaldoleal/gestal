@@ -1,5 +1,5 @@
 from datetime import datetime
-from core.config import VERBOSE
+import core.config as cfg
 
 class Log():
     pattern = '[{}] [{}] [{}] - {}'
@@ -25,7 +25,7 @@ class Log():
 
     @classmethod
     def debug(cls, message, origin = '', level = 0):
-        if (level <= VERBOSE):
+        if (level <= cfg.VERBOSE):
             print(cls.get_str(message, origin = origin, type = '\033[1;35;40mDEBU\033[0m'))
 
     # TODO: add support to save log to file

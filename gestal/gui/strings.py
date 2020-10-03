@@ -1,5 +1,5 @@
 # TODO: this file should be a core module
-from core import config as cfg
+import core.config as cfg
 
 def get_string(string):
     global STRINGS

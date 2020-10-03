@@ -1,8 +1,9 @@
-from core import config as cfg, util
+from core import util
 from core.log import Log
 from datetime import datetime
 from gi.repository import Gtk
 from .strings import get_string
+import core.config as cfg
 
 def replace_widget(current, new):
     container = current.get_parent()

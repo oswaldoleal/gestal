@@ -1,10 +1,11 @@
-from core import config as cfg, info
 from core.log import Log
 from datetime import datetime
 from os import path
 from uuid import uuid4
 from .models import Project, Task, Team, TeamPermission, User, Tag, TagAssignment
 import sqlite3
+import core.config as cfg
+import core.info as info
 
 class Persistence():
     storage_methods = []
@@ -83,12 +84,13 @@ class DefaultStorage(BaseStorage):
         Log.info('Initialized Storage', origin = 'DefaultStorage')
 
         self.DB_NAME = f'{info.NAME}_{self.name}.db'
+        Log.debug(f'Database name {self.DB_NAME}', origin = 'DefaultStorage', level = 1)
         
-        if (path.isfile(f'{cfg.DB_PATH}{self.DB_NAME}')):
+        if (path.isfile(path.join(cfg.DB_PATH, self.DB_NAME))):
             return
         
         # TODO: move the relevant code to the 'execute' function
-        con = sqlite3.connect(self.DB_NAME)
+        con = sqlite3.connect(path.join(cfg.DB_PATH, self.DB_NAME))
 
         cur = con.cursor()
         for query in self.get_table_queries():

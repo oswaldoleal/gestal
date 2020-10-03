@@ -15,5 +15,6 @@ LEFT_PANE_HEIGHT = WINDOW_HEIGHT
 
 # Config directory / DB directory TODO: determine where is the best place to save the data
 DB_PATH = ''
+LOG_PATH = ''
 
 VERBOSE = 0
